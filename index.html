@@ -6,10 +6,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab 9</title>
+  <!-- added some coloring because I am working in the dark -->
+  <style> 
+    body {
+      background-color: black;
+      color: rgb(152, 173, 181);
+    }
 
-  <style>
+    select, input {
+      background-color: #3a3a3a;
+      color: rgb(152, 173, 181);
+    }
+
     button {
       margin: 3px;
+      background-color: #333333;
+      color: rgb(152, 173, 181);
     }
 
     button:hover {
@@ -69,24 +81,32 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="groupStart">Console Group Start</button>
+      <button id="groupEnd">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="timerStart">Start Timer</button>
+      <button id="timerEnd">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="errorGlobal">Trigger a Global Error</button>
     </section>
   </main>
-
+  
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "d5c67af266874166b230090004e9cdc6"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -102,6 +122,112 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let btnLog = document.querySelector("#log");
+    btnLog.addEventListener("click", () => {
+      console.log("log");
+    });
+
+    let btnError = document.querySelector("#error");
+    btnError.addEventListener("click", () => {
+      console.error("error");
+    });
+    
+    let btnCount = document.querySelector("#count");
+    btnCount.addEventListener("click", () => {
+      console.count("count");
+    });
+    
+    let btnWarn = document.querySelector("#warn");
+    btnWarn.addEventListener("click", () => {
+      console.warn("warn");
+    });
+    
+    let btnAssert = document.querySelector("#assert");
+    btnAssert.addEventListener("click", () => {
+      console.assert(("1" + "1") == "2");
+    });
+    
+    let btnClear = document.querySelector("#clear");
+    btnClear.addEventListener("click", () => {
+      console.clear();
+    });
+    
+    let btnDir = document.querySelector("#dir");
+    btnDir.addEventListener("click", () => {
+      console.dir(btnDir);
+    });
+    
+    let btnDirxml = document.querySelector("#dirxml");
+    btnDirxml.addEventListener("click", () => {
+      console.dirxml(btnDirxml);
+    });
+    
+    let btnGroupStart = document.querySelector("#groupStart");
+    btnGroupStart.addEventListener("click", () => {
+      console.group();
+    });
+    
+    let btnGroupEnd = document.querySelector("#groupEnd");
+    btnGroupEnd.addEventListener("click", () => {
+      console.groupEnd();
+    });
+    
+    let btnTable = document.querySelector("#table");
+    btnTable.addEventListener("click", () => {
+      console.table({
+        key1 : "value1",
+        key2 : "value2",
+        key3 : "value3",
+      });
+    });
+    
+    let btnTimerStart = document.querySelector("#timerStart");
+    btnTimerStart.addEventListener("click", () => {
+      console.time();
+    });
+    
+    let btnTimerEnd = document.querySelector("#timerEnd");
+    btnTimerEnd.addEventListener("click", () => {
+      console.timeEnd();
+    });
+    
+    let btnTrace = document.querySelector("#trace");
+    btnTrace.addEventListener("click", () => {
+      console.trace();
+    });
+    
+    let btnErrorGlobal = document.querySelector("#errorGlobal");
+    btnErrorGlobal.addEventListener("click", () => {
+      throw new ScreamError("there is a global error");
+    });
+
+    try {
+      let btnErrorLocal = document.querySelector("#errorLocal");
+      btnErrorLocal.addEventListener("click", () => {
+        throw new Error("HEH??");
+      });
+    } catch (e) {
+      console.log("Hmm there is an error => " + e)
+    } finally {
+      console.log("Was there an error?")
+    }
+
+    class ScreamError extends Error {
+      constructor(message) {
+        super("AHHHHHH " + message?.toUpperCase()); // (1)
+        this.name = "ScreamError"; // (2)
+      }
+    }
+
+    window.onerror = (errorMessage,url,lineNumber) => {
+      console.log("Calm down its just an error.");
+      console.log("The error: " + errorMessage);
+      TrackJS.track("Error Message: " + errorMessage + "\n" + 
+                    "URL: " + url + "\n" + 
+                    "Line Number: " + lineNumber 
+      );
+      return true;
+    };
   </script>
 </body>
 
